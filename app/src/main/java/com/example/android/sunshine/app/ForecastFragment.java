@@ -1,6 +1,7 @@
 package com.example.android.sunshine.app;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -54,12 +55,12 @@ public class ForecastFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        String[] forecastArray = {
+        final String[] forecastArray = {
                 "Today - Sunny",
                 "Tomorrow -  Foggy",
                 "Weds - Cloudy", "Thus - Rainy"};
 
-        List<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastArray));
+        final List<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastArray));
 
         forecastAdapter = new ArrayAdapter<String>(getActivity(),
                 R.layout.list_item_forecast,
@@ -72,7 +73,11 @@ public class ForecastFragment extends android.support.v4.app.Fragment {
         l.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity() , forecastAdapter.getItem(position), Toast.LENGTH_SHORT).show();
+
+                Intent detailActivityIntent = new Intent(getActivity(), DetailActivity.class);
+                detailActivityIntent.putExtra(Intent.EXTRA_TEXT, forecastAdapter.getItem(position));
+                startActivity(detailActivityIntent);
+
             }
         });
 
