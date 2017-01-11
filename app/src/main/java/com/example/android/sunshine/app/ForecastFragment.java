@@ -2,9 +2,11 @@ package com.example.android.sunshine.app;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,21 +53,20 @@ public class ForecastFragment extends android.support.v4.app.Fragment {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+        updateWeather();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final String[] forecastArray = {
-                "Today - Sunny",
-                "Tomorrow -  Foggy",
-                "Weds - Cloudy", "Thus - Rainy"};
-
-        final List<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastArray));
-
         forecastAdapter = new ArrayAdapter<String>(getActivity(),
                 R.layout.list_item_forecast,
                 R.id.list_item_forecast_textview,
-                weekForecast);
+                new ArrayList<String>());
 
         ListView l = (ListView) rootView.findViewById(R.id.listview_forecast);
         l.setAdapter(forecastAdapter);
@@ -92,17 +93,27 @@ public class ForecastFragment extends android.support.v4.app.Fragment {
 
     }
 
+
+    private void updateWeather(){
+        new FetchWeatherTask().execute(PreferenceManager
+                .getDefaultSharedPreferences(getActivity())
+                .getString(getString(R.string.pref_location_key),
+                        getString(R.string.pref_location_default)));
+    }
+
     @Override
     public boolean onOptionsItemSelected (MenuItem item){
 
         int id = item.getItemId();
         if (id == R.id.action_refresh){
            // new FetchWeatherTask().execute("94043");
-            new FetchWeatherTask().execute("campinas");
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
