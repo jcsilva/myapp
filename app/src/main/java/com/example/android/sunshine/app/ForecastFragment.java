@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
+
 /**
  * Created by jcsilva on 12/15/16.
  */
@@ -113,6 +115,13 @@ public class ForecastFragment extends android.support.v4.app.Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private String[] metric2Imperial(String[] metric){
+        String[] out= metric;
+        for(int i = 0; i < metric.length; ++i){
+            out[i] = "0";
+        }
+        return out;
+    }
 
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
@@ -124,6 +133,17 @@ public class ForecastFragment extends android.support.v4.app.Fragment {
             super.onPostExecute(strings);
 
             if (strings != null) {
+
+                if (PreferenceManager
+                        .getDefaultSharedPreferences(getActivity())
+                        .getString(getString(R.string.pref_units_key),
+                                getString(R.string.pref_units_metric)).equals(getString(R.string.pref_units_imperial))){
+
+
+                    strings = metric2Imperial(strings);
+                }
+
+
                 forecastAdapter.clear();
                 for (String item : strings) {
                     forecastAdapter.add(item);
