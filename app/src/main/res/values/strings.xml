@@ -9,6 +9,7 @@
     <string name="action_refresh" translatable="false">Refresh</string>
 
     <string name="action_map">View Map</string>
+    <string name="action_share">Share</string>
 
     <!--[CHAR LIMIT=30]-->
     <string name="pref_location_label">Location</string>
